@@ -1,3 +1,5 @@
+using ApiMiddleware.Entity;
+
 namespace ApiMiddleware
 {
     public class Program
@@ -12,6 +14,7 @@ namespace ApiMiddleware
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<ContentContext>();
 
             var app = builder.Build();
 

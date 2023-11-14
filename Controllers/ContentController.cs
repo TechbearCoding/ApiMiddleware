@@ -1,25 +1,43 @@
 ﻿using ApiMiddleware.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace ApiMiddleware.Controllers
 {
     [ApiController]
-    [Route("post")]
+    [Route("api/[controller]")]
     public class ContentController : ControllerBase
     {
-        private static List<ContentEntity> contentEntities = new List<ContentEntity>()
+        private readonly ContentContext _context;
+
+        public ContentController(ContentContext context)
         {
-            new ContentEntity("1", "this is title", "this is post"),
-            new ContentEntity("2", "this is another title", "this is another post"),
-            new ContentEntity("3", "this is yet another title", "this is yet another post"),
-        };
+            _context = context;
+        }
 
         [HttpGet(Name = "GetContent")]
-        public IEnumerable<ContentEntity> Get()
+        public async Task<ActionResult<ContentEntity>> GetAll()
         {
-            return contentEntities;
+            var contentEntities = await _context.ContentEntities.ToListAsync();
+            if (contentEntities == null)
+            {
+                return NotFound();
+            }
+            return Ok(contentEntities);
         }
+
+        [HttpPost(Name = "PostContent")]
+        public async Task<ActionResult<ContentEntity>> Post(ContentEntity contentEntity)
+        {
+            _context.ContentEntities.Add(contentEntity);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
      
     }
 }
