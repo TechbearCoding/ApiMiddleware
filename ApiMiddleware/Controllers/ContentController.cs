@@ -1,4 +1,6 @@
 ﻿using ApiMiddleware.Entity;
+using MediumClient.Models;
+using MediumClient.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +13,12 @@ namespace ApiMiddleware.Controllers
     public class ContentController : ControllerBase
     {
         private readonly ContentContext _context;
+        private readonly IMediumService _mediumService;
 
-        public ContentController(ContentContext context)
+        public ContentController(ContentContext context, IMediumService mediumService)
         {
             _context = context;
+            _mediumService = mediumService;
         }
 
         [HttpGet(Name = "GetContent")]
@@ -33,6 +37,13 @@ namespace ApiMiddleware.Controllers
         {
             _context.ContentEntities.Add(contentEntity);
             await _context.SaveChangesAsync();
+            PostRequest postRequest = new PostRequest();
+            postRequest.Title = contentEntity.PostTitle;
+            postRequest.Content = contentEntity.PostContent;
+            postRequest.ContentFormat = "markdown";
+            postRequest.PublishStatus = "draft";
+
+            await _mediumService.Post(postRequest);
 
             return Ok();
         }

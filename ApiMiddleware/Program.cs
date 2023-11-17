@@ -1,4 +1,5 @@
 using ApiMiddleware.Entity;
+using MediumClient.Services;
 
 namespace ApiMiddleware
 {
@@ -15,6 +16,12 @@ namespace ApiMiddleware
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<ContentContext>();
+            builder.Services.AddHttpClient("MediumApiClient", client =>
+            {
+                client.BaseAddress = new Uri("https://api.medium.com/");
+                // Other HttpClient configurations if required
+            });
+            builder.Services.AddSingleton<IMediumService, MediumService>();
 
             var app = builder.Build();
 
