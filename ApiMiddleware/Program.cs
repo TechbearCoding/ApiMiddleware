@@ -1,5 +1,6 @@
 using ApiMiddleware.Entity;
 using MediumClient.Services;
+using System.Net.Http.Headers;
 
 namespace ApiMiddleware
 {
@@ -19,6 +20,9 @@ namespace ApiMiddleware
             builder.Services.AddHttpClient("MediumApiClient", client =>
             {
                 client.BaseAddress = new Uri("https://api.medium.com/");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("Accept-Charset", "utf-8");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "181d415f34379af07b2c11d144dfbe35d");
                 // Other HttpClient configurations if required
             });
             builder.Services.AddSingleton<IMediumService, MediumService>();
