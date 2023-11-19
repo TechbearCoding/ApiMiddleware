@@ -37,11 +37,15 @@ namespace ApiMiddleware.Controllers
         {
             _context.ContentEntities.Add(contentEntity);
             await _context.SaveChangesAsync();
-            PostRequest postRequest = new PostRequest();
-            postRequest.Title = contentEntity.PostTitle;
-            postRequest.Content = contentEntity.PostContent;
-            postRequest.ContentFormat = "markdown";
-            postRequest.PublishStatus = "draft";
+
+            PostRequest postRequest = new PostRequest
+            {
+                Title = contentEntity.PostTitle,
+                Content = contentEntity.PostContent,
+                ContentFormat = "markdown",
+                PublishStatus = "draft"
+            };
+
 
             await _mediumService.Post(postRequest);
 
