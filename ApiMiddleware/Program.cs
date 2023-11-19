@@ -22,7 +22,7 @@ namespace ApiMiddleware
                 client.BaseAddress = new Uri("https://api.medium.com/");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Add("Accept-Charset", "utf-8");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "181d415f34379af07b2c11d144dfbe35d");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "26e9bc4d98c0b3fd8ab0d94c94f78c59805cf15450638289a6d95d62224b2957d");
                 // Other HttpClient configurations if required
             });
             builder.Services.AddSingleton<IMediumService, MediumService>();
