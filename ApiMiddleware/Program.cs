@@ -1,4 +1,5 @@
 using ApiMiddleware.Entity;
+using ApiMiddleware.Services;
 using MediumClient.Services;
 using System.Net.Http.Headers;
 
@@ -26,6 +27,18 @@ namespace ApiMiddleware
                 // Other HttpClient configurations if required
             });
             builder.Services.AddSingleton<IMediumService, MediumService>();
+            builder.Services.AddScoped<IAPiService, APIService>();
+
+            builder.Services.AddCors(options =>
+             {
+                 options.AddPolicy("AllowSpecificOrigin",
+                     builder =>
+                     {
+                         builder.WithOrigins("https://localhost") // Replace with your allowed origin(s)
+                             .AllowAnyHeader()
+                             .AllowAnyMethod();
+                     });
+             });
 
             var app = builder.Build();
 

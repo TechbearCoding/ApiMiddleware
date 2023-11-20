@@ -1,4 +1,5 @@
 ﻿using ApiMiddleware.Entity;
+using ApiMiddleware.Services;
 using MediumClient.Models;
 using MediumClient.Services;
 using Microsoft.AspNetCore.Http;
@@ -13,12 +14,12 @@ namespace ApiMiddleware.Controllers
     public class ContentController : ControllerBase
     {
         private readonly ContentContext _context;
-        private readonly IMediumService _mediumService;
+        private readonly IAPiService _aPiService;
 
-        public ContentController(ContentContext context, IMediumService mediumService)
+        public ContentController(ContentContext context, IAPiService aPiService)
         {
             _context = context;
-            _mediumService = mediumService;
+            _aPiService = aPiService;
         }
 
         [HttpGet(Name = "GetContent")]
@@ -35,21 +36,21 @@ namespace ApiMiddleware.Controllers
         [HttpPost(Name = "PostContent")]
         public async Task<ActionResult<ContentEntity>> Post(ContentEntity contentEntity)
         {
-            _context.ContentEntities.Add(contentEntity);
-            await _context.SaveChangesAsync();
-
-            PostRequest postRequest = new PostRequest
+            if (!ModelState.IsValid)
             {
-                Title = contentEntity.PostTitle,
-                Content = contentEntity.PostContent,
-                ContentFormat = "markdown",
-                PublishStatus = "draft"
-            };
+                return BadRequest(ModelState);
+            }
 
-
-            await _mediumService.Post(postRequest);
-
-            return Ok();
+            try
+            {
+                await _aPiService.CreateContentAndPostToMedium(contentEntity);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
         }
 
 
